@@ -36,21 +36,20 @@
 	<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
-		<a class="navbar-brand" href="#"> <i class="fa fa-heart"
+		<a class="navbar-brand" href="/chat/"> <i class="fa fa-heart"
 			aria-hidden="true"></i> 채팅
 		</a>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
-			data-target="#navbarSupportedContent"
-			aria-controls="navbarSupportedContent" aria-expanded="false"
-			aria-label="Toggle navigation">
+			data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+			aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="/chat/">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="#">Matching</a></li>
+				<li class="nav-item"><a class="nav-link" href="/chat/matching">Matching</a></li>
 			</ul>
 
 			<div class="justify-content-end">
@@ -76,7 +75,7 @@
 		<div style="width: 30%; float: none; margin: 0 auto;">
 			<div style="height:50%;"></div>
 			
-			<form method="post" action="chat/signup">
+			<form method="post" action="<c:url value="/signup" />">
 				<div class="form-group">
 					<label for="userId">아이디</label>
 					<input type="text" class="form-control" name="userId">

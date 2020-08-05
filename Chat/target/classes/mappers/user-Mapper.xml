@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ 
+<mapper namespace="com.my.chat.data.userDAO">
+	
+	
+	<!-- 
+		id = 메소드 이름
+		resultType = 반환타입의 위치 (mybatis-config에서 alias 설정 시 지정한 별칭 사용)
+	 -->
+	 
+	<select id="selectList" resultType="userDTO">
+		select * from userTable;	
+	</select>
+	
+	<!-- 
+		파라미터에 붙이는 #는 컬럼의 자료형에 맞춰서 파라미터의 자료형을 변환해준다.
+		$를 붙이면 받은 파라미터의 형태로 넣는다. 
+	 -->
+	<insert id="signupUser">
+		insert into userTable value( #{param1}, #{param2}, #{param3} );
+	</insert>
+    
+</mapper>

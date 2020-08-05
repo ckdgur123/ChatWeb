@@ -16,17 +16,4 @@ public class HomeController {
 		
 		return "home";
 	}
-	
-	@RequestMapping("/loginForm")
-	public String loginForm() {
-		
-		return "loginForm";
-	}
-	
-	@RequestMapping("/signupForm")
-	public String signUpForm() {
-		
-		return "signupForm";
-	}
-
 }
