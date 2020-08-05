@@ -20,14 +20,13 @@ public class HomeController {
 	@RequestMapping("/loginForm")
 	public String loginForm() {
 		
-		
 		return "loginForm";
 	}
-	@RequestMapping("/signUpForm")
+	
+	@RequestMapping("/signupForm")
 	public String signUpForm() {
 		
-		
-		return "loginForm";
+		return "signupForm";
 	}
 
 }

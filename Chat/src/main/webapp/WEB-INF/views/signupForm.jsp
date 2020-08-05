@@ -1,13 +1,10 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page session="false"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
-<title>Home</title>
-<!--  ${pageContext.request.contextPath}/assets/파일경로  -->
-
+<meta charset="UTF-8">
+<title> 회원가입 </title>
 <!-- 부트스트랩 -->
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -29,10 +26,8 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
 </head>
 <body>
-
 	<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
@@ -70,22 +65,16 @@
 
 		</div>
 	</nav>
-
-
-
-	<div class="container" style="width: 100%; height: 100%;">
-		<div class="row" style="width: 100%; height: 35%;"></div>
-
-		<div class="mx-auto" style="width: 200px;">
-			<p>
-				<a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/loginForm" />"> 로그인 </a>
-			</p>
-			<a class="btn btn-secondary btn-lg btn-block" href="/signupForm"> 회원가입 </a> <br>
-		</div>
-
-
-	</div>
-
+	
+		<form method="post" action="<c:url value="/signup" />">
+	
+		<p>ID : <input type="text" name="username"></p>
+		<p>PWD : <input type="password" name="password"></p>
+	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	    
+	    <input type="submit" value="로그인">
+	</form>
+	
 
 </body>
 </html>
