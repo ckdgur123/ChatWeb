@@ -1,5 +1,7 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page session="false"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,6 +28,9 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<style>
+	label { font-size:14px;}
+</style>
 </head>
 <body>
 	<!-- navbar -->
@@ -44,7 +49,7 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="/chat/">Home</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">Matching</a></li>
 			</ul>
 
@@ -65,16 +70,36 @@
 
 		</div>
 	</nav>
-	
-		<form method="post" action="<c:url value="/signup" />">
-	
-		<p>ID : <input type="text" name="username"></p>
-		<p>PWD : <input type="password" name="password"></p>
-	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-	    
-	    <input type="submit" value="로그인">
-	</form>
-	
+
+
+	<div class="row text-center" style="width: 100%">
+		<div style="width: 30%; float: none; margin: 0 auto;">
+			<div style="height:50%;"></div>
+			
+			<form method="post" action="chat/signup">
+				<div class="form-group">
+					<label for="userId">아이디</label>
+					<input type="text" class="form-control" name="userId">
+				</div>
+				<div class="form-group">
+					<label for="password">패스워드</label>
+					<input type="password" class="form-control" name="password">
+				</div>
+				<div class="form-group">
+					<label for="passwordConfirm">패스워드 확인</label>
+					<input type="password" class="form-control" name="passwordConfirm">
+				</div>
+				<div class="form-group">
+					<label for="nickname">닉네임</label>
+					<input type="text" class="form-control" name="nickname">
+				</div>
+				
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				<input type="submit" value="회원가입" class="btn btn-success">
+			</form>
+
+		</div>
+	</div>
 
 </body>
 </html>

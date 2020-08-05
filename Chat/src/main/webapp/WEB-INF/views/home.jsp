@@ -49,7 +49,7 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="/chat/">Home</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">Matching</a></li>
 			</ul>
 
@@ -80,7 +80,7 @@
 			<p>
 				<a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/loginForm" />"> 로그인 </a>
 			</p>
-			<a class="btn btn-secondary btn-lg btn-block" href="/signupForm"> 회원가입 </a> <br>
+			<a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/signupForm" />"> 회원가입 </a> <br>
 		</div>
 
 
