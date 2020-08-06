@@ -38,8 +38,7 @@
 	<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
-		<a class="navbar-brand" href="#"> <i class="fa fa-heart"
-			aria-hidden="true"></i> 채팅
+		<a class="navbar-brand" href="<c:url value="/" />"> <i class="fa fa-heart" aria-hidden="true"></i> 채팅
 		</a>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -50,13 +49,13 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="/chat/">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/Matching/" />
-">Matching</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/" />">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching/" />">Matching</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board/" />">Board</a></li>
 			</ul>
 
-			<div style="text-align:right; ">
-				<ul class="navbar-nav mr-auto ">
+			<div style="text-align:right;width:10%;">
+				<ul class="navbar-nav mr-auto" >
 					<li class="nav-item dropdown" >
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
 							role="button" data-toggle="dropdown" aria-haspopup="true"aria-expanded="false" >
@@ -99,14 +98,17 @@
 	<div class="container" style="width: 100%; height: 100%;">
 		<div class="row" style="width: 100%; height: 35%;"></div>
 
-		<div class="mx-auto" style="width: 200px;">
-			<p>
-				<a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/loginForm" />"> 로그인 </a>
-			</p>
-			<a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/signupForm" />"> 회원가입 </a> <br>
+		<div class="mx-auto" style="width: 230px;">
+			<sec:authorize access="isAnonymous()">
+				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/loginForm" />"> 로그인 </a></p>
+				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/signupForm" />"> 회원가입 </a></p>
+			</sec:authorize>
+			<sec:authorize access="isAuthenticated()">
+				<h5 style="text-align:center;"> ${nickname } 님, 안녕하세요! </h5>
+				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/matching" />"> 매칭하기 </a></p>
+				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/board" />"> 게시판 </a></p>
+			</sec:authorize>
 		</div>
-
-
 	</div>
 
 

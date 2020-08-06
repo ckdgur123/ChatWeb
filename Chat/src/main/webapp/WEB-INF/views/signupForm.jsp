@@ -2,6 +2,8 @@
 <%@ page session="false"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+	
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,8 +67,7 @@
 	<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
-		<a class="navbar-brand" href="/chat/"> <i class="fa fa-heart"
-			aria-hidden="true"></i> 채팅
+		<a class="navbar-brand" href="<c:url value="/" />"> <i class="fa fa-heart" aria-hidden="true"></i> 채팅
 		</a>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -77,21 +78,43 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="/chat/">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="/chat/matching">Matching</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/" />">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching/" />">Matching</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board/" />">Board</a></li>
 			</ul>
 
-			<div class="justify-content-end">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"> **회원님 </a>
+			<div style="text-align:right;width:10%;">
+				<ul class="navbar-nav mr-auto" >
+					<li class="nav-item dropdown" >
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+							role="button" data-toggle="dropdown" aria-haspopup="true"aria-expanded="false" >
+							
+							<!--  로그인 하지 않으면 Guest 로 보이고, 로그인하면 닉네임이 보이도록 설정-->
+							<sec:authorize access="isAnonymous()">
+								Guest
+							</sec:authorize>
+							<sec:authorize access="isAuthenticated()">
+								<span style="color:white;">${nickname} </span>님
+							</sec:authorize>
+						</a>
+						
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="#">Login</a> <a
-								class="dropdown-item" href="#">Logout</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Something else here</a>
+							<sec:authorize access="isAnonymous()">
+								<a class="dropdown-item" href="<c:url value="/loginForm" />">로그인</a>
+								<a class="dropdown-item" href="<c:url value="/signupForm" />">회원가입</a>
+							</sec:authorize>
+							<sec:authorize access="isAuthenticated()">
+								<a class="dropdown-item" href="<c:url value="/updateUser" />">회원정보수정</a>
+								<a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">로그아웃</a>
+								<form id="logout-form" action='<c:url value='/logout'/>' method="POST">
+							   		<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
+								</form>
+								
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Something else here</a>
+							</sec:authorize>
+							
+
 						</div></li>
 				</ul>
 			</div>

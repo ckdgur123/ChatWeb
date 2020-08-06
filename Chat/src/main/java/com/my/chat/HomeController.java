@@ -6,12 +6,16 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.my.chat.data.userDAO;
+import com.my.chat.data.userDTO;
 import com.my.chat.util.LogInterceptor;
 
 /**
@@ -25,10 +29,11 @@ public class HomeController {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	@Autowired
+	private BCryptPasswordEncoder bcryptPwd;
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Principal principal,Model model) {
-		
-		
 		
 		if(principal != null) {
 			
@@ -37,12 +42,35 @@ public class HomeController {
 			model.addAttribute("nickname", nickname);
 		}
 		
-		
 		return "index";
 	}
 	
-	@RequestMapping("/errorPage/403")
-	public String ErrorPage_403() {
-		return "/errorPage/403";
+	@RequestMapping("/loginForm")
+	public String loginForm(Principal principal) {
+		
+		if(principal!=null)
+			return "redirect:/errorPage/exists_user";
+		
+		return "/loginForm";
 	}
+	
+	@RequestMapping("/signupForm")
+	public String signUpForm(Principal principal) {
+		
+		if(principal!=null)
+			return "redirect:/errorPage/exists_user";
+		
+		return "/signupForm";
+	}
+	
+	@RequestMapping("/signup")
+	public String signup(userDTO user) {
+		
+		userDAO dao = sqlSession.getMapper(userDAO.class);
+		String encPassword = bcryptPwd.encode(user.getPassword());
+		dao.signupUser(user.getUserId(), encPassword, user.getNickname());
+		
+		return "redirect:/";
+	}
+	
 }

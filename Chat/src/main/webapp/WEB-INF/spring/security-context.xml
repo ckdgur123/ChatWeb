@@ -7,34 +7,29 @@
                                  http://www.springframework.org/schema/beans/spring-beans.xsd
                                  http://www.springframework.org/schema/security
                                  http://www.springframework.org/schema/security/spring-security.xsd">
-   
-   
-   
-                                 
-                                 
+
 
 	<http auto-config="true">
-	
-	    <form-login
-	      	login-page="/loginForm"
-	      	default-target-url="/"
-	      	username-parameter="userId"
-	    />
-	    
-	    <logout
-	        logout-url="/logout"
-	        logout-success-url="/"
-	    />
-	    
-	   	<access-denied-handler
-		    error-page="/errorPage/403"
+
+		<form-login
+			login-page="/loginForm"
+			default-target-url="/"
+			username-parameter="userId"
 		/>
-	    
-	    
-	    <intercept-url pattern="/admin/**" access="hasRole('Role_Admin')" />
-	    <intercept-url pattern="/user/**" access="hasAnyRole('Role_User','ROLE_ADMIN')" />
-        <intercept-url pattern="/**" access="permitAll" />
-	
+
+		<logout
+			logout-url="/logout"
+			logout-success-url="/"
+		/>
+
+	    <access-denied-handler
+	    	error-page="/errorPage/403"
+		/>
+
+
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/user/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		<intercept-url pattern="/**" access="permitAll" />
 	</http>
 
 
@@ -42,13 +37,17 @@
 		id="userService"
 		users-by-username-query="select userId, password, enabled from userTable where userId=?"
 		authorities-by-username-query="select userId, authority,nickname from userTable where userId=?" />
+		
+	<beans:bean id="BcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+		<beans:constructor-arg value="5" />
+	</beans:bean>
 
 	<authentication-manager>
 		<authentication-provider
-		
 			user-service-ref="userService">
+			<password-encoder ref="BcryptPasswordEncoder" > </password-encoder>
 		</authentication-provider>
 	</authentication-manager>
-	
+
 
 </beans:beans>

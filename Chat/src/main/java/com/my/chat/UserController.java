@@ -14,26 +14,4 @@ public class UserController {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	@RequestMapping("/loginForm")
-	public String loginForm() {
-		
-		return "/loginForm";
-	}
-	
-	@RequestMapping("/signupForm")
-	public String signUpForm() {
-		
-		return "/signupForm";
-	}
-	
-	@RequestMapping("/signup")
-	public String signup(userDTO user) {
-		
-		userDAO dao = sqlSession.getMapper(userDAO.class);
-		dao.signupUser(user.getUserId(), user.getPassword(), user.getNickname());
-		
-		return "redirect:/";
-	}
-
-
 }
