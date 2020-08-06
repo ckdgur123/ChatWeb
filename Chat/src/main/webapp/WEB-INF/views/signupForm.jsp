@@ -31,6 +31,35 @@
 <style>
 	label { font-size:14px;}
 </style>
+
+<script>
+	function checkValue()
+	{
+	    if(!document.userInfo.userId.value){
+	        alert("아이디를 입력하세요.");
+	        return false;
+	    }
+	    
+	    if(!document.userInfo.password.value){
+	        alert("비밀번호를 입력하세요.");
+	        return false;
+	    }
+	    
+	    if(!document.userInfo.nickname.value){
+	        alert("닉네임을 입력하세요.");
+	        return false;
+	    }
+	    
+	    // 비밀번호와 비밀번호 확인에 입력된 값이 동일한지 확인
+	    if(document.userInfo.password.value != document.userInfo.passwordConfirm.value ){
+	        alert("비밀번호를 동일하지 않습니다!");
+	        return false;
+	    }
+
+	    return true;
+	}
+
+</script>
 </head>
 <body>
 	<!-- navbar -->
@@ -75,7 +104,8 @@
 		<div style="width: 30%; float: none; margin: 0 auto;">
 			<div style="height:50%;"></div>
 			
-			<form method="post" action="<c:url value="/signup" />">
+			<form method="post" action="<c:url value="/signup" />"
+				name="userInfo" onsubmit="return checkValue()">
 				<div class="form-group">
 					<label for="userId">아이디</label>
 					<input type="text" class="form-control" name="userId">

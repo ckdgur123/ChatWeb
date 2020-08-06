@@ -30,6 +30,10 @@
 	<style>
 		label { font-size:14px;}
 	</style>
+	
+	<script>
+		
+	</script>
 </head>
 <body onload="document.f.username.focus();">
 	<!-- navbar -->
@@ -70,11 +74,13 @@
 	</nav>
 
 
+
+
 		<div class="row text-center" style="width: 100%">
 		<div style="width: 30%; float: none; margin: 0 auto;">
 			<div style="height:80%;"></div>
 			
-			<form method="post" action="/chat/login">
+			<form method="post" action="<c:url value="/login" />">
 				<div class="form-group">
 					<label for="userId">아이디</label>
 					<input type="text" class="form-control" name="userId">
@@ -87,7 +93,15 @@
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				<input type="submit" value="로그인" class="btn btn-success">
 			</form>
-
+			
+			<div style="height:10%;"></div>
+			
+			<!-- 로그인에 실패하면 세션에 저장된 에러 메시지를 출력한다. -->
+			<c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION }">
+				
+				<p style="color:red; font-weight:bold;"> login Failed! ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message }</p>
+				<c:remove var="SPRING_SECURITY_LAST_EXCEPTION" scope="session" />
+			</c:if>
 		</div>
 	</div>
 

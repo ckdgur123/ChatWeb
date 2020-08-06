@@ -6,5 +6,6 @@ public interface userDAO {
 	
 	public ArrayList<userDTO> selectList();
 	public void signupUser(String userId,String password,String nickname);
+	public String selectUserNickname(String userId);
 
 }

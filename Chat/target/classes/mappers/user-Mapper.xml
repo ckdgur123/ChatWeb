@@ -16,12 +16,16 @@
 		select * from userTable;	
 	</select>
 	
+	<select id="selectUserNickname" resultType="String">
+		select nickname from userTable where userId= (#{param});	
+	</select>
+	
 	<!-- 
 		파라미터에 붙이는 #는 컬럼의 자료형에 맞춰서 파라미터의 자료형을 변환해준다.
 		$를 붙이면 받은 파라미터의 형태로 넣는다. 
 	 -->
 	<insert id="signupUser">
-		insert into userTable value( #{param1}, #{param2}, #{param3} );
-	</insert>
+		insert into userTable(userId, password, nickname) value( #{param1}, #{param2}, #{param3} );
+	</insert>	
     
 </mapper>

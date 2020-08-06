@@ -17,13 +17,13 @@ public class UserController {
 	@RequestMapping("/loginForm")
 	public String loginForm() {
 		
-		return "loginForm";
+		return "/loginForm";
 	}
 	
 	@RequestMapping("/signupForm")
 	public String signUpForm() {
 		
-		return "signupForm";
+		return "/signupForm";
 	}
 	
 	@RequestMapping("/signup")
