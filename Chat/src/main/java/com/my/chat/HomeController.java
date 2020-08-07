@@ -2,14 +2,15 @@ package com.my.chat;
 
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,14 +34,21 @@ public class HomeController {
 	private BCryptPasswordEncoder bcryptPwd;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(Principal principal,Model model) {
+	public String index(Principal principal,HttpServletRequest request, Model model) {
 		
-		if(principal != null) {
+		HttpSession session = request.getSession();
+		String nick = (String) session.getAttribute("nickname");
+		
+		if(principal != null && nick == null) {
 			
 			userDAO dao = sqlSession.getMapper(userDAO.class);
 			String nickname = dao.selectUserNickname(principal.getName());
+			session.setAttribute("nickname", nickname);
 			model.addAttribute("nickname", nickname);
 		}
+		else
+			model.addAttribute("nickname", nick);
+		
 		
 		return "index";
 	}

@@ -12,4 +12,5 @@
 	<typeAliases>
 		<typeAlias type="com.my.chat.data.userDTO" alias="userDTO" />
 	</typeAliases>
+	
 </configuration>
