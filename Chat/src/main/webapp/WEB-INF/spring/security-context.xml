@@ -11,9 +11,15 @@
 
 	<http auto-config="true">
 
+		<!--
+			always-use-default-target="true"
+			접근제한된 URL로 요청하고나서 로그인성공 시 무조건 원래 요청된 페이지로 이동하는데,
+			무조건 default-target-url 로 이동하게 하는 명령어
+		 -->
 		<form-login
 			login-page="/loginForm"
 			default-target-url="/"
+			always-use-default-target="true" 
 			username-parameter="userId"
 		/>
 

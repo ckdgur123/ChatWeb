@@ -1,7 +1,9 @@
 package com.my.chat.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -22,7 +24,6 @@ public class chatHandler extends TextWebSocketHandler{
 		
 		sessionList.add(session);
 		log.info(session.getId() + " 연결됨 ");
-		
 	}
 	
 	/*
@@ -42,6 +43,11 @@ public class chatHandler extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		sessionList.remove(session);
-		log.info("연결 종료");
+	}
+	
+	public void sendInfo(WebSocketSession session) throws Exception{
+		for(WebSocketSession se : sessionList) {
+			se.sendMessage(new TextMessage(Integer.toString(sessionList.size())));
+		}
 	}
 }

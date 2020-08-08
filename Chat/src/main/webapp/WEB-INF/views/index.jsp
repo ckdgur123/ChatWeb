@@ -107,6 +107,7 @@
 				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/matching" />"> 매칭하기 </a></p>
 				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/board" />"> 게시판 </a></p>
 			</sec:authorize>
+			
 		</div>
 	</div>
 
