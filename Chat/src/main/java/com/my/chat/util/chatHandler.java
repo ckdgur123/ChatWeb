@@ -17,7 +17,7 @@ public class chatHandler extends TextWebSocketHandler{
 	
 	Logger log = LoggerFactory.getLogger(chatHandler.class);
 	private List<WebSocketSession> sessionList = new ArrayList<WebSocketSession>();
-	public int userCount;
+	private int userCount;
 	
 	/*
 	 * handleTextMessage : 클라이언트가 메세지 전송 시 호출되는 메소드 
@@ -60,7 +60,7 @@ public class chatHandler extends TextWebSocketHandler{
 			userCount=sessionList.size();
 			JSONPObject jsonCount = new JSONPObject("userCount", userCount);
 			for(WebSocketSession se : sessionList) {
-				se.sendMessage(new TextMessage(jsonCount.getValue().toString()));
+				se.sendMessage(new TextMessage(Integer.toString(userCount)));
 				se.sendMessage(textMessage);
 			}
 		}
