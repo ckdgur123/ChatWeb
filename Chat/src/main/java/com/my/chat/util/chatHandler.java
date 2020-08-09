@@ -58,7 +58,6 @@ public class chatHandler extends TextWebSocketHandler{
 		else {
 			
 			userCount=sessionList.size();
-			JSONPObject jsonCount = new JSONPObject("userCount", userCount);
 			for(WebSocketSession se : sessionList) {
 				se.sendMessage(new TextMessage(Integer.toString(userCount)));
 				se.sendMessage(textMessage);
