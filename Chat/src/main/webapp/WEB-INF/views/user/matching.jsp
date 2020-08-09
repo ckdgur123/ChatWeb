@@ -34,9 +34,10 @@
     <script>
         var websocket;
         var nickname = '<c:out value="${nickname}"/>';
+		var count;
+        
         function connectSocket(){
         	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
-            	writeResponse("WebSocket is already opened.");
             	return;
             }
             websocket = new SockJS("http://localhost:8080/chat/user/matching/echo/");
@@ -46,18 +47,27 @@
             	websocket.send(JSON.stringify({
 					type:'ENTER',
 					nickname:nickname
-					}));
+				}));
             }
-            websocket.onmessage = function(evt){
-            	let today = new Date(); 
-            	$('#chattingLog').append("["+today.toLocaleString()+"] ");
-            	$('#chattingLog').append(evt.data);
-            	$('#chattingLog').append("<br/>");
-                $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
-            }
+            
             websocket.onclose = function(){
-        		disconnect();
+        			disconnect();
             }	
+            
+            websocket.onmessage = function(evt){
+
+                if(evt.data.length==1){
+                    count = evt.data;
+                	$('#userCount').text("현재 접속 인원: "+ count);
+                }
+                else{
+	            	let today = new Date(); 
+	            	$('#chattingLog').append("["+today.toLocaleString()+"] ");
+	            	$('#chattingLog').append(evt.data);
+	            	$('#chattingLog').append("<br/>");
+	                $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
+                }
+            }
         }
 
 		function enterKey(){
@@ -81,13 +91,23 @@
 	    }
 	    
     	function disconnect(){
-    		websocket.send(JSON.stringify({
-				type:'LEAVE',
-				nickname:nickname
-				}));
-    		websocket.close();
-    		$('#guideMessage').text('연결종료');
+        	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
+        		websocket.send(JSON.stringify({
+    				type:'LEAVE',
+    				nickname:nickname
+    				}));
+        		websocket.close();
+        		$('#guideMessage').text('연결종료');
+        		count--;
+    			$('#userCount').text("현재 접속 인원: "+ count);
+        	}
     	}
+
+    	window.onbeforeunload = function() {
+    		if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
+            	disconnect();
+            }
+        }
 
     </script>
 </head>
@@ -154,7 +174,8 @@
 	</nav>
 	<div class=container style="border-right: 4px solid black;border-left: 4px solid black;">
 		<div class=container style="border-bottom: 4px dashed gray; margin-top:10px;" >
-			<h3 class="text-center" > Chatting </h3>
+			<div class="text-center" style="font-size:30px; font-weight:bold;"> Chatting </div>
+			<div id="userCount" style="text-align:right; font-size:18px; font-weight:bold;"> </div>
 		</div>
 		<div class=container>
 			<div class="chatBorder">

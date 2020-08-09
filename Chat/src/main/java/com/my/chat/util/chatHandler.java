@@ -11,11 +11,13 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 
 public class chatHandler extends TextWebSocketHandler{
 	
 	Logger log = LoggerFactory.getLogger(chatHandler.class);
 	private List<WebSocketSession> sessionList = new ArrayList<WebSocketSession>();
+	public int userCount;
 	
 	/*
 	 * handleTextMessage : 클라이언트가 메세지 전송 시 호출되는 메소드 
@@ -40,12 +42,28 @@ public class chatHandler extends TextWebSocketHandler{
 		else {
 			chatMessage.setMessage(chatMessage.getNickname()+": "+ chatMessage.getMessage());
 		}
-		
 		TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatMessage.getMessage()));
-		for(WebSocketSession se : sessionList) {
-			se.sendMessage(textMessage);
-		}
+		sendUserCount(chatMessage.getType(), textMessage);
 		
+	}
+	
+	public void sendUserCount(MessageType type, TextMessage textMessage) throws Exception{
+		
+		if(type == MessageType.CHAT) {
+			
+			for(WebSocketSession se : sessionList)
+				se.sendMessage(textMessage);
+			
+		}
+		else {
+			
+			userCount=sessionList.size();
+			JSONPObject jsonCount = new JSONPObject("userCount", userCount);
+			for(WebSocketSession se : sessionList) {
+				se.sendMessage(new TextMessage(jsonCount.getValue().toString()));
+				se.sendMessage(textMessage);
+			}
+		}
 	}
 	
 	/*

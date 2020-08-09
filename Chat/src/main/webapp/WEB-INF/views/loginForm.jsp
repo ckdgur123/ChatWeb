@@ -37,7 +37,7 @@
 		
 	</script>
 </head>
-<body onload="document.f.username.focus();">
+<body onload="document.f.userId.focus();">
 	<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
@@ -104,7 +104,7 @@
 		<div style="width: 30%; float: none; margin: 0 auto;">
 			<div style="height:80%;"></div>
 			
-			<form method="post" action="<c:url value="/login" />">
+			<form method="post" action="<c:url value="/login" />" name=f>
 				<div class="form-group">
 					<label for="userId">아이디</label>
 					<input type="text" class="form-control" name="userId">

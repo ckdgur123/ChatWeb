@@ -34,20 +34,19 @@
 <body>
 	<div class="container">
 		<table class="table table-striped">
-			<thead>
+			<tr>
+				<th>번호</th>
+				<th>방 이름</th>
+				<th>입장</th>
+			</tr>
+			
+			<c:forEach items="${room}" var="roomList">
 				<tr>
-					<th>번호</th>
-					<th>방 이름</th>
-					<th>입장버튼</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="room : ${rooms}">
-					<td th:text="${room.roomId}"></td>
-					<td th:text="${room.name}"></td>
-					<td><a class="btn btn-primary" th:href="@{/rooms/{id} (id = ${room.roomId})}"></a></td>
-				</tr>
-			</tbody>
+	    			<td>${room.roomId}</td>
+	    			<td>${room.roomName}</td>
+	    			<td><a class="btn btn-info" href=#> 입장 </a></td>
+	    		</tr>
+			</c:forEach>
 		</table>
 		<div style="text-align:right;">
 			<a class="btn btn-primary" href="javascript:openCreateRoom()">새로 만들기</a>
