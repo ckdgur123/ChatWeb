@@ -34,19 +34,19 @@
     <script>
         var websocket;
         var nickname = '<c:out value="${nickname}"/>';
-        
-        
         function connectSocket(){
         	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
             	writeResponse("WebSocket is already opened.");
             	return;
             }
-
-            websocket = new SockJS("http://localhost:8080/chat/user/matching/echo");
+            websocket = new SockJS("http://localhost:8080/chat/user/matching/echo/");
             $('#guideMessage').text('연결됨');
-            
+
             websocket.onopen = function(){
-            	websocket.send(nickname+"님 등장!");
+            	websocket.send(JSON.stringify({
+					type:'ENTER',
+					nickname:nickname
+					}));
             }
             websocket.onmessage = function(evt){
             	let today = new Date(); 
@@ -56,7 +56,7 @@
                 $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
             }
             websocket.onclose = function(){
-        		websocket.send(nickname+"님 퇴장!");
+        		disconnect();
             }	
         }
 
@@ -69,14 +69,22 @@
 
         function sendMessage(){
             if($('#message').val()!= ''){
-                websocket.send(nickname+ ": "+$("#message").val());
+				var msg = $("#message").val();
+				websocket.send(JSON.stringify({
+					type:'CHAT',
+					nickname:nickname,
+					message:msg
+					}));
                 $('#message').val('');
             }
 
 	    }
 	    
     	function disconnect(){
-    		websocket.send(nickname+"님 퇴장!");
+    		websocket.send(JSON.stringify({
+				type:'LEAVE',
+				nickname:nickname
+				}));
     		websocket.close();
     		$('#guideMessage').text('연결종료');
     	}

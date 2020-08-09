@@ -105,6 +105,7 @@
 			<sec:authorize access="isAuthenticated()">
 				<h5 style="text-align:center;"> ${nickname } 님, 안녕하세요! </h5>
 				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/matching" />"> 매칭하기 </a></p>
+				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/roomList" />"> 채팅방 </a></p>
 				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/board" />"> 게시판 </a></p>
 			</sec:authorize>
 			

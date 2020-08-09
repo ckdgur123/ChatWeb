@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.my.chat.data.userDAO;
 import com.my.chat.data.userDTO;
@@ -34,7 +35,9 @@ public class HomeController {
 	private BCryptPasswordEncoder bcryptPwd;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(Principal principal,HttpServletRequest request, Model model) {
+	public ModelAndView index(Principal principal,HttpServletRequest request, Model model) {
+		
+		ModelAndView mv = new ModelAndView();
 		
 		HttpSession session = request.getSession();
 		String nick = (String) session.getAttribute("nickname");
@@ -44,13 +47,14 @@ public class HomeController {
 			userDAO dao = sqlSession.getMapper(userDAO.class);
 			String nickname = dao.selectUserNickname(principal.getName());
 			session.setAttribute("nickname", nickname);
-			model.addAttribute("nickname", nickname);
+			mv.addObject("nickname", nickname);
 		}
 		else
-			model.addAttribute("nickname", nick);
+			mv.addObject("nickname", nick);
 		
+		mv.setViewName("index");
 		
-		return "index";
+		return mv;
 	}
 	
 	@RequestMapping("/loginForm")

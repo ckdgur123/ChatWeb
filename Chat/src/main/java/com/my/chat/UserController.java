@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.my.chat.util.LogInterceptor;
 
@@ -17,11 +18,25 @@ public class UserController {
 	Logger log = LoggerFactory.getLogger(LogInterceptor.class);
 	
 	@RequestMapping("/matching")
-	public String matching(HttpServletRequest request,Model model) {
+	public ModelAndView matching(HttpServletRequest request,Model model) {
+		
+		ModelAndView mv = new ModelAndView("/user/matching");
 		
 		String nickname = (String)request.getSession().getAttribute("nickname");
-		model.addAttribute("nickname", nickname);
+		mv.addObject("nickname", nickname);
 		
-		return "/user/matching";
+		return mv;
+	}
+	
+	@RequestMapping("/roomList")
+	public String roomList() {
+		return "/user/roomList";
+	}
+	
+	@RequestMapping("/createRoom")
+	public String createRoom() {
+		return "/user/createRoom";
 	}
 }
+
+

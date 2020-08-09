@@ -1,7 +1,6 @@
 package com.my.chat.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,20 +10,12 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class chatHandler extends TextWebSocketHandler{
 	
 	Logger log = LoggerFactory.getLogger(chatHandler.class);
 	private List<WebSocketSession> sessionList = new ArrayList<WebSocketSession>();
-	
-	/*
-	 * afterConnectionEstablished : 웹소켓이 연결되면 호출되는 메소드
-	 */
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		
-		sessionList.add(session);
-		log.info(session.getId() + " 연결됨 ");
-	}
 	
 	/*
 	 * handleTextMessage : 클라이언트가 메세지 전송 시 호출되는 메소드 
@@ -32,22 +23,40 @@ public class chatHandler extends TextWebSocketHandler{
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		
-		for(WebSocketSession se : sessionList) {
-			se.sendMessage(new TextMessage(message.getPayload()));
+		String msg = message.getPayload();
+		
+		//ObjectMapper = JSON 타입의 데이터를 클래스로 매핑해주는 클래스
+		ObjectMapper objectMapper = new ObjectMapper();
+		ChatMessage chatMessage = objectMapper.readValue(msg, ChatMessage.class);
+
+		if(chatMessage.getType() == MessageType.ENTER) {
+			sessionList.add(session);
+			chatMessage.setMessage("☆★"+chatMessage.getNickname()+"님 등장!"+"☆★");
+		}
+		else if(chatMessage.getType() == MessageType.LEAVE) {
+			chatMessage.setMessage("☆★"+chatMessage.getNickname()+"님 퇴장!"+"☆★");
+			sessionList.remove(session);
+		}
+		else {
+			chatMessage.setMessage(chatMessage.getNickname()+": "+ chatMessage.getMessage());
 		}
 		
-        log.info("{}로 부터 {} 받음", session.getId(), message.getPayload());
-
-	}
-	
-	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		sessionList.remove(session);
-	}
-	
-	public void sendInfo(WebSocketSession session) throws Exception{
+		TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatMessage.getMessage()));
 		for(WebSocketSession se : sessionList) {
-			se.sendMessage(new TextMessage(Integer.toString(sessionList.size())));
+			se.sendMessage(textMessage);
 		}
+		
 	}
+	
+	/*
+	 * afterConnectionEstablished, afterConnectionClosed 메소드의 역할을 각각 
+	 * handleTextMessage의 MessageType이 ENTER, LEAVE일 때로 수행할 수 있다.
+	 *  @Override
+		public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+			log.info(session.getId() + " 연결됨 ");
+		}
+	 *  @Override
+		public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		}
+	 */
 }
