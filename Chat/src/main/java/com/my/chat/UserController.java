@@ -29,14 +29,23 @@ public class UserController {
 	}
 	
 	@RequestMapping("/roomList")
-	public String roomList() {
+	public String roomList(HttpServletRequest request,Model model) {
+		
+		String nickname = (String)request.getSession().getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
+		
 		return "/user/roomList";
 	}
 	
-	@RequestMapping("/createRoom")
-	public String createRoom() {
-		return "/user/createRoom";
+	@RequestMapping("/roomChatting")
+	public String roomChatting(HttpServletRequest request,Model model) {
+		
+		String nickname = (String)request.getSession().getAttribute("nickname");
+		model.addAttribute("nickname", nickname);
+		
+		return "/user/roomChatting";
 	}
+	
 }
 
 

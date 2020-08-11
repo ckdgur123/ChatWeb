@@ -4,13 +4,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="j" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<!DOCTYPE html>
 <html>
 <head>
-<title>Home</title>
-<!--  ${pageContext.request.contextPath}/assets/파일경로  -->
-
-<!-- 부트스트랩 -->
+<meta charset="UTF-8">
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
@@ -26,14 +23,59 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
 	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 	crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.5/sockjs.min.js"></script>
+
 
 <!-- 무료아이콘 -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel=stylesheet href=../resources/chatting.css>
+	
+    <script>
+        var websocket;
+        var nickname = '<c:out value="${nickname}"/>';
+		var count;
+        
+        function connectSocket(){
+        	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
+            	return;
+            }
+            websocket = new SockJS("http://localhost:8080/chat/user/roomChatting/echo/");
+            $('#guideMessage').text('연결됨');
 
+            websocket.onopen = function(){
+            	websocket.send(JSON.stringify({
+					type:'ENTER',
+					nickname:nickname
+				}));
+            }
+            
+            websocket.onclose = function(){
+        			disconnect();
+            }	
+            
+            websocket.onmessage = function(evt){
+
+                if(evt.data.length==1){
+                    count = evt.data;
+                	$('#userCount').text("현재 접속 인원: "+ count);
+                }
+                else{
+	            	let today = new Date(); 
+	            	$('#chattingLog').append("["+today.toLocaleString()+"] ");
+	            	$('#chattingLog').append(evt.data);
+	            	$('#chattingLog').append("<br/>");
+	                $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
+                }
+            }	
+        }
+
+    </script>
 </head>
-<body>
 
+
+<body>
+	
 	<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
@@ -49,7 +91,7 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="<c:url value="/" />">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching" />">Matching</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching/" />">Matching</a></li>
 				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board/" />">Board</a></li>
 			</ul>
 
@@ -91,27 +133,28 @@
 
 		</div>
 	</nav>
-
-
-
-	<div class="container" style="width: 100%; height: 100%;">
-		<div class="row" style="width: 100%; height: 35%;"></div>
-
-		<div class="mx-auto" style="width: 230px;">
-			<sec:authorize access="isAnonymous()">
-				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/loginForm" />"> 로그인 </a></p>
-				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/signupForm" />"> 회원가입 </a></p>
-			</sec:authorize>
-			<sec:authorize access="isAuthenticated()">
-				<h5 style="text-align:center;"> ${nickname } 님, 안녕하세요! </h5>
-				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/matching" />"> 매칭하기 </a></p>
-				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/roomList" />"> 채팅방 </a></p>
-				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/board" />"> 게시판 </a></p>
-			</sec:authorize>
-			
+	<div class=container style="border-right: 4px solid black;border-left: 4px solid black;">
+		<div class=container style="border-bottom: 4px dashed gray; margin-top:10px;" >
+			<div class="text-center" style="font-size:30px; font-weight:bold;"> Chatting </div>
+			<div id="userCount" style="text-align:right; font-size:18px; font-weight:bold;"> </div>
+		</div>
+		<div class=container>
+			<div class="chatBorder">
+				<div id=chattingLog style="max-height:50px;"></div>
+				
+				<div class=footer>
+					<div style="text-align:right; margin:10px;">
+						<div id="guideMessage" ></div>
+						<button onclick="connectSocket();" class="btn btn-success"> 연결 </button>
+			        	<button onclick="disconnect();" class="btn btn-danger"> 종료 </button>
+					</div>			
+			        
+					<input type="text" id="message" onkeyup="enterKey();">
+					<button onclick="sendMessage();" class="btn btn-info">Send</button>
+				</div>	
+		    </div>
 		</div>
 	</div>
-
-
+	
 </body>
 </html>

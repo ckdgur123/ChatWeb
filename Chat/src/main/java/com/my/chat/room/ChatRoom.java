@@ -1,56 +1,89 @@
 package com.my.chat.room;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.chat.util.ChatMessage;
-import com.my.chat.util.MessageType;
 
 public class ChatRoom {
 	
-	private int roomId;
+	private String roomId;
 	private String roomName;
-	private List<WebSocketSession> sessionList = new ArrayList<WebSocketSession>(); 
-
-	public ChatRoom createRoom(String roomName) {
-		
-		ChatRoom chatRoom = new ChatRoom();
-		chatRoom.roomId = sessionList.size()+1;
-		chatRoom.roomName = roomName;
-		
-		return chatRoom;
+	private String nickname;
+	private int roomMaxUser;
+	private int roomUserCount;
+	private Set<WebSocketSession> sessionList =  new HashSet<WebSocketSession>();
+	private Set<String> nicknameList = new HashSet<String>(); 
+	
+	public void addUser(WebSocketSession session,String nickname) {
+		sessionList.add(session);
+		nicknameList.add(nickname);
+		setRoomUserCount(sessionList.size());
 	}
 	
-	 public void handleMessage(WebSocketSession session, ChatMessage chatMessage,
-             ObjectMapper objectMapper) throws IOException {
-		 
-		 
-		 if(chatMessage.getType() == MessageType.ENTER) {
-			 sessionList.add(session);
-			 chatMessage.setMessage(chatMessage.getNickname() +"님 등장!");
-		 }
-		 else if(chatMessage.getType() == MessageType.LEAVE) {
-			 sessionList.remove(session);
-			 chatMessage.setMessage(chatMessage.getNickname() +"님 퇴장!");
-		 }
-		 else {
-			 chatMessage.setMessage(chatMessage.getNickname()+": "+chatMessage.getMessage());
-		 }
-		 send(chatMessage, objectMapper);
-		 
-	 }
-	 
-	 private void send(ChatMessage chatMessage, ObjectMapper objectMapper) throws IOException {
-		 
-		 TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatMessage.getMessage()));
-		 
-		 for(WebSocketSession sess : sessionList) {
-			 sess.sendMessage(textMessage);
-		 }
-	 }
+	public boolean CheckSession(WebSocketSession session) {
+		
+		return sessionList.contains(session);
+	}
+	
+	
+	
+	public Set<String> getNicknameList() {
+		return nicknameList;
+	}
+
+	public boolean CheckNickname(String nickname) {
+		
+		return nicknameList.contains(nickname);
+	}
+	
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public int getRoomUserCount() {
+		return roomUserCount;
+	}
+
+	public void setRoomUserCount(int roomUserCount) {
+		this.roomUserCount = roomUserCount;
+	}
+
+	private RoomType roomType;
+
+	public String getRoomId() {
+		return roomId;
+	}
+
+	public int getRoomMaxUser() {
+		return roomMaxUser;
+	}
+
+	public void setRoomMaxUser(int roomMaxUser) {
+		this.roomMaxUser = roomMaxUser;
+	}
+
+	public RoomType getRoomType() {
+		return roomType;
+	}
+
+	public void setRoomType(RoomType roomType) {
+		this.roomType = roomType;
+	}
+
+	public String getRoomName() {
+		return roomName;
+	}
+
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
+	}
+
+	public void setRoomId(String roomId) {
+		this.roomId = roomId;
+	}
 }

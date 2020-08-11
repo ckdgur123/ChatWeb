@@ -1,44 +1,36 @@
 package com.my.chat.room;
 
-import com.my.chat.util.MessageType;
+import com.my.chat.util.ChatMessage;
 
-public class RoomMessage {
+public class RoomMessage extends ChatMessage{
 	
 	private String roomId;
-	private String nickname;
-	private String message;
-	private MessageType type;
-
+	private String roomName;
+	private int roomMaxUser;
+	private int roomUserCount;
+	
 	public String getRoomId() {
 		return roomId;
 	}
-
 	public void setRoomId(String roomId) {
 		this.roomId = roomId;
 	}
-
-	public MessageType getType() {
-		return type;
+	public String getRoomName() {
+		return roomName;
 	}
-
-	public void setType(MessageType type) {
-		this.type = type;
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
 	}
-
-	public String getNickname() {
-		return nickname;
+	public int getRoomMaxUser() {
+		return roomMaxUser;
 	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setRoomMaxUser(int roomMaxUser) {
+		this.roomMaxUser = roomMaxUser;
 	}
-
-	public String getMessage() {
-		return message;
+	public int getRoomUserCount() {
+		return roomUserCount;
 	}
-
-	public void setMessage(String message) {
-		this.message = message;
+	public void setRoomUserCount(int roomUserCount) {
+		this.roomUserCount = roomUserCount;
 	}
-
 }

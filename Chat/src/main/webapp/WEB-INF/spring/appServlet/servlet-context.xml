@@ -13,6 +13,8 @@
 	
 	<websocket:handlers>
 		<websocket:mapping handler="chatHandler" path="/user/matching/echo" />	
+		<websocket:mapping handler="RoomHandler" path="/user/roomMatching/echo" />	
+		<websocket:mapping handler="RoomHandler" path="/user/roomMessage/echo" />	
 		<websocket:handshake-interceptors>
 	         <beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" />
 	    </websocket:handshake-interceptors>
@@ -20,6 +22,7 @@
 	</websocket:handlers>
     
 	<beans:bean id="chatHandler" class="com.my.chat.util.chatHandler"></beans:bean>
+	<beans:bean id="RoomHandler" class="com.my.chat.room.RoomHandler"></beans:bean>
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
