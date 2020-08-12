@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.my.chat.room.ChatRoom;
 import com.my.chat.util.LogInterceptor;
 
 @Controller
@@ -41,7 +42,11 @@ public class UserController {
 	public String roomChatting(HttpServletRequest request,Model model) {
 		
 		String nickname = (String)request.getSession().getAttribute("nickname");
+		String roomId = (String)request.getParameter("frmRoomId");
+		String roomName = (String)request.getParameter("frmRoomName");
 		model.addAttribute("nickname", nickname);
+		model.addAttribute("roomId", roomId);
+		model.addAttribute("roomName", roomName);
 		
 		return "/user/roomChatting";
 	}

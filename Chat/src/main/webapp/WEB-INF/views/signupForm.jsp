@@ -54,7 +54,7 @@
 	    
 	    // 비밀번호와 비밀번호 확인에 입력된 값이 동일한지 확인
 	    if(document.userInfo.password.value != document.userInfo.passwordConfirm.value ){
-	        alert("비밀번호를 동일하지 않습니다!");
+	        alert("비밀번호가 동일하지 않습니다!");
 	        return false;
 	    }
 

@@ -1,11 +1,10 @@
 package com.my.chat.room;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -35,39 +34,54 @@ public class RoomHandler extends TextWebSocketHandler{
 		objectMapper = new ObjectMapper();
 		ChatRoom chatRoom = objectMapper.readValue(message.getPayload(), ChatRoom.class);
 		
+		log.info(objectMapper.writeValueAsString(chatRoom));
+		
 		// roomType 이 message로 올 때 = 방 만들기/제거 했을 때
 		if(chatRoom.getRoomType() == RoomType.CREATE) {
 			
 			chatRoom.setRoomId(Integer.toString(map.size()+1));
-			map.put(Integer.toString(map.size()+1), chatRoom);
+			log.info(objectMapper.writeValueAsString(chatRoom));
 			chatRoom.addUser(session, chatRoom.getNickname());
-			
+			map.put(Integer.toString(map.size()+1), chatRoom);
+			sendJSONMessage(session,"SEND_ROOMID",chatRoom.getRoomId(),chatRoom.getRoomName());
 			String sendMessage = objectMapper.writeValueAsString(chatRoom);
 			allSessionSend(sendMessage);
-			return;
+			
 		}
 		else if(chatRoom.getRoomType() == RoomType.REMOVE) {
+			
 			map.remove(chatRoom.getRoomId());
 		}
-		else {
+		else if(chatRoom.getRoomType() == RoomType.ENTER){
 			ChatRoom room = map.get(chatRoom.getRoomId());
 			if ( room.getRoomMaxUser() <= room.getRoomUserCount()) {
-				noEnter(session,"인원이 꽉 찼습니다.");
-
+				if(room.CheckNickname(chatRoom.getNickname()))
+					sendJSONMessage(session,"SEND_ROOMID",chatRoom.getRoomId(),room.getRoomName());
+				else
+					sendJSONMessage(session,"NO_ENTER","인원이 꽉 찼습니다.");
 			}
 			else {
 				if(!room.CheckSession(session) && !room.CheckNickname(chatRoom.getNickname())) {
 					
 					room.addUser(session,chatRoom.getNickname());
 					map.replace(room.getRoomId(), room);
+					sendJSONMessage(session,"SEND_ROOMID",chatRoom.getRoomId(),room.getRoomName());
 					room.setRoomType(RoomType.ENTER);
 					String roomMessage = objectMapper.writeValueAsString(room);
 					allSessionSend(roomMessage);
 					room.setRoomType(RoomType.CREATE);
 				}
-				else
-					noEnter(session,"이미 참여하고 있는 방입니다.");
+				else if(room.CheckNickname(chatRoom.getNickname())) {
+					sendJSONMessage(session,"SEND_ROOMID",chatRoom.getRoomId(),room.getRoomName());
+				}
+				else {
+					sendJSONMessage(session,"NO_ENTER","이미 참여하고 있는 방입니다.");
+				}
 			}
+		}
+		else if(chatRoom.getRoomType() == RoomType.CHAT) {
+			
+			log.info("오이구야");
 		}
 	}
 	
@@ -77,12 +91,20 @@ public class RoomHandler extends TextWebSocketHandler{
 		}
 	}
 
-	public void noEnter(WebSocketSession session,String message) throws Exception{
+	public void sendJSONMessage(WebSocketSession session,String roomType,String message) throws Exception{
 		JSONObject jsonMessage = new JSONObject();
-		jsonMessage.put("roomType", "NO_ENTER");
+		jsonMessage.put("roomType", roomType);
 		jsonMessage.put("message", message);
 		session.sendMessage(new TextMessage(jsonMessage.toJSONString()));
 	}
+	public void sendJSONMessage(WebSocketSession session,String roomType,String message, String roomName) throws Exception{
+		JSONObject jsonMessage = new JSONObject();
+		jsonMessage.put("roomType", roomType);
+		jsonMessage.put("message", message);
+		jsonMessage.put("roomName", roomName);
+		session.sendMessage(new TextMessage(jsonMessage.toJSONString()));
+	}
+	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		

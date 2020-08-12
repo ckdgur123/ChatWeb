@@ -87,7 +87,6 @@
 					}));
                 $('#message').val('');
             }
-
 	    }
 	    
     	function disconnect(){

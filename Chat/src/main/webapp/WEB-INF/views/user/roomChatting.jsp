@@ -34,41 +34,65 @@
     <script>
         var websocket;
         var nickname = '<c:out value="${nickname}"/>';
+        var roomId = '<c:out value="${roomId}"/>';
+        var roomName = '<c:out value="${roomName}"/>';
 		var count;
-        
-        function connectSocket(){
-        	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
-            	return;
-            }
-            websocket = new SockJS("http://localhost:8080/chat/user/roomChatting/echo/");
-            $('#guideMessage').text('연결됨');
 
-            websocket.onopen = function(){
-            	websocket.send(JSON.stringify({
-					type:'ENTER',
-					nickname:nickname
-				}));
-            }
-            
-            websocket.onclose = function(){
-        			disconnect();
-            }	
-            
-            websocket.onmessage = function(evt){
+		websocket = new SockJS("http://localhost:8080/chat/user/roomMatching/echo/");
+        websocket.onclose = function(){
+			disconnect();
+    	}
+        websocket.onmessage = function(evt){
 
-                if(evt.data.length==1){
-                    count = evt.data;
-                	$('#userCount').text("현재 접속 인원: "+ count);
-                }
-                else{
-	            	let today = new Date(); 
-	            	$('#chattingLog').append("["+today.toLocaleString()+"] ");
-	            	$('#chattingLog').append(evt.data);
-	            	$('#chattingLog').append("<br/>");
-	                $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
-                }
-            }	
+            var roomMessageData = evt.data;
+
+            if(evt.data.length==1){
+                count = evt.data;
+            	$('#userCount').text("현재 접속 인원: "+ count);
+            }
+            else if(roomMessageData.MessageType=='CHAT'){
+            	let today = new Date(); 
+            	$('#chattingLog').append("["+today.toLocaleString()+"] ");
+            	$('#chattingLog').append(evt.data);
+            	$('#chattingLog').append("<br/>");
+                $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
+            }
         }
+        
+		function enterKey(){
+	        if(window.event.keyCode==13){
+				sendMessage();
+	       	}
+		}
+
+        function sendMessage(){
+            if($('#message').val()!= ''){
+				var msg = $("#message").val();
+				websocket.send(JSON.stringify({
+					roomType:'CHAT',
+					messageType:'CHAT',
+					roomId:roomId,
+					nickname:nickname,
+					message:msg
+					}));
+                $('#message').val('');
+            }
+	    }
+            
+        function disconnect(){
+        	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
+            	if(confirm('채팅방을 나가시겠습니까?')){
+            		websocket.close();
+            		
+                }
+        	}
+    	}
+
+    	window.onbeforeunload = function() {
+        	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
+        		websocket.close();
+        	}
+        }	
 
     </script>
 </head>
@@ -135,7 +159,7 @@
 	</nav>
 	<div class=container style="border-right: 4px solid black;border-left: 4px solid black;">
 		<div class=container style="border-bottom: 4px dashed gray; margin-top:10px;" >
-			<div class="text-center" style="font-size:30px; font-weight:bold;"> Chatting </div>
+			<div class="text-center" style="font-size:30px; font-weight:bold;"> ${roomId}번방 - ${roomName} </div>
 			<div id="userCount" style="text-align:right; font-size:18px; font-weight:bold;"> </div>
 		</div>
 		<div class=container>
@@ -145,8 +169,7 @@
 				<div class=footer>
 					<div style="text-align:right; margin:10px;">
 						<div id="guideMessage" ></div>
-						<button onclick="connectSocket();" class="btn btn-success"> 연결 </button>
-			        	<button onclick="disconnect();" class="btn btn-danger"> 종료 </button>
+			        	<button onclick="disconnect();" class="btn btn-danger"> 나가기 </button>
 					</div>			
 			        
 					<input type="text" id="message" onkeyup="enterKey();">

@@ -118,6 +118,11 @@
 			else if (roomData.roomType=='NO_ENTER'){
 				alert(roomData.message);
 			}
+			else if(roomData.roomType=='SEND_ROOMID'){
+				$('#frmRoomId').val(roomData.message);
+				$('#frmRoomName').val(roomData.roomName);
+				$('#frm').submit();
+			}
         }
 
         function updateTable(){
@@ -153,7 +158,6 @@
 					nickname:nickname
 				}));
 			};
-			location.href='/chat/user/roomChatting';
         }	
 
     	function disconnect(){
@@ -214,6 +218,12 @@
 		<button class="btn btn-primary" data-toggle="modal"
 			data-target="#createNewRoom" style="margin: 20px;">새로 만들기</button>
 	</div>
+	
+	<form id=frm method=post action=<c:url value="/user/roomChatting" />>
+		<input type=hidden id=frmRoomId name=frmRoomId>
+		<input type=hidden id=frmRoomName name=frmRoomName>
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	</form>
 
 
 </body>

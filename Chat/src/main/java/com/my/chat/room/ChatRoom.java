@@ -1,42 +1,64 @@
 package com.my.chat.room;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.web.socket.WebSocketSession;
+
+import com.my.chat.util.MessageType;
 
 public class ChatRoom {
 	
 	private String roomId;
 	private String roomName;
 	private String nickname;
+	private String message;
 	private int roomMaxUser;
 	private int roomUserCount;
-	private Set<WebSocketSession> sessionList =  new HashSet<WebSocketSession>();
+	private Map<String,WebSocketSession> sessionList =  new HashMap<String,WebSocketSession>();
 	private Set<String> nicknameList = new HashSet<String>(); 
-	
+	private RoomType roomType;
+	private MessageType messageType;
+
 	public void addUser(WebSocketSession session,String nickname) {
-		sessionList.add(session);
+		sessionList.put(nickname,session);
 		nicknameList.add(nickname);
 		setRoomUserCount(sessionList.size());
 	}
-	
+
 	public boolean CheckSession(WebSocketSession session) {
 		
-		return sessionList.contains(session);
+		return sessionList.containsValue(session);
 	}
 	
-	
-	
-	public Set<String> getNicknameList() {
-		return nicknameList;
-	}
-
 	public boolean CheckNickname(String nickname) {
 		
 		return nicknameList.contains(nickname);
 	}
-	
+
+	public Set<String> getNicknameList() {
+		return nicknameList;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public MessageType getMessageType() {
+		return messageType;
+	}
+
+	public void setMessageType(MessageType messageType) {
+		this.messageType = messageType;
+	}
+
 	public String getNickname() {
 		return nickname;
 	}
@@ -52,8 +74,6 @@ public class ChatRoom {
 	public void setRoomUserCount(int roomUserCount) {
 		this.roomUserCount = roomUserCount;
 	}
-
-	private RoomType roomType;
 
 	public String getRoomId() {
 		return roomId;

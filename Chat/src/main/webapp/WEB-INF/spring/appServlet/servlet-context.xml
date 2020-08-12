@@ -14,7 +14,6 @@
 	<websocket:handlers>
 		<websocket:mapping handler="chatHandler" path="/user/matching/echo" />	
 		<websocket:mapping handler="RoomHandler" path="/user/roomMatching/echo" />	
-		<websocket:mapping handler="RoomHandler" path="/user/roomMessage/echo" />	
 		<websocket:handshake-interceptors>
 	         <beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" />
 	    </websocket:handshake-interceptors>
