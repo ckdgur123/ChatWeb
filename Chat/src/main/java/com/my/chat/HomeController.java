@@ -85,4 +85,13 @@ public class HomeController {
 		return "redirect:/";
 	}
 	
+	@RequestMapping("/checkIdURL")
+	public Integer checkId(userDTO user) {
+		
+		userDAO dao = sqlSession.getMapper(userDAO.class);
+		int checkValue = dao.selectUserId();
+		
+		return checkValue;
+	}
+	
 }

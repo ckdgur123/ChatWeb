@@ -24,7 +24,6 @@ public class ChatRoom {
 	private Map<String,WebSocketSession> sessionMatchedNicknameList =  new HashMap<String,WebSocketSession>();
 	private RoomType roomType;
 	private MessageType messageType;
-	Logger log = LoggerFactory.getLogger(LogInterceptor.class);
 
 	public void addUser(WebSocketSession session,String nickname) {
 		sessionMatchedNicknameList.put(nickname,session);

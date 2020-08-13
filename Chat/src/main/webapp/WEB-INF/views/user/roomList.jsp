@@ -104,6 +104,11 @@
         websocket.onclose = function(){
 			disconnect();
     	}
+    	websocket.onopen = function(){
+        	websocket.send(JSON.stringify({
+				roomType:'GET_LIST'
+			}));
+        }
     	websocket.onmessage=function(evt){
 			
 			var roomData = JSON.parse(evt.data);
@@ -114,6 +119,9 @@
 				drawTable(roomData);
 			}
 			else if (roomData.roomType=='ENTER'){
+				updateTable();
+			}
+			else if(roomData.roomType=='RELOAD'){
 				updateTable();
 			}
 			else if (roomData.roomType=='NO_ENTER'){

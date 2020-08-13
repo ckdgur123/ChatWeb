@@ -16,6 +16,10 @@
 		select * from userTable;	
 	</select>
 	
+	<select id="selectUserId" resultType="Integer">
+		select count(*) from userTable where userId=(#{param});	
+	</select>
+	
 	<select id="selectUserNickname" resultType="String">
 		select nickname from userTable where userId= (#{param});	
 	</select>

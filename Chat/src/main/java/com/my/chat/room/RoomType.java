@@ -1,5 +1,5 @@
 package com.my.chat.room;
 
 public enum RoomType {
-	CREATE, REMOVE, ENTER, CHAT;
+	GET_LIST, CREATE, REMOVE, ENTER, CHAT, RELOAD;
 }

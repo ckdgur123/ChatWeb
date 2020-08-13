@@ -36,8 +36,20 @@ public class RoomHandler extends TextWebSocketHandler{
 		
 		log.info("chatRoom: "+objectMapper.writeValueAsString(chatRoom));
 		
-		// roomType 이 message로 올 때 = 방 만들기/제거 했을 때
-		if(chatRoom.getRoomType() == RoomType.CREATE) {
+		
+		if(chatRoom.getRoomType() == RoomType.GET_LIST) {
+			
+			sessionList.add(session);
+			log.info(session.getId() +" 연결됨");
+			
+			for(String key : map.keySet()) {
+				ChatRoom room = map.get(key);
+				String roomData = objectMapper.writeValueAsString(room);
+				session.sendMessage(new TextMessage(roomData));
+			}
+			
+		}
+		else if(chatRoom.getRoomType() == RoomType.CREATE) {
 			
 			chatRoom.setRoomId(Integer.toString(map.size()+1));
 			chatRoom.addUser(session, chatRoom.getNickname());
@@ -133,26 +145,12 @@ public class RoomHandler extends TextWebSocketHandler{
 	}
 	
 	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		
-		sessionList.add(session);
-		log.info(session.getId() +" 연결됨");
-		
-		for(String key : map.keySet()) {
-			ChatRoom room = map.get(key);
-			String roomData = objectMapper.writeValueAsString(room);
-			session.sendMessage(new TextMessage(roomData));
-		}
-		
-	}
-	
-	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		sessionList.remove(session);
 		log.info(session.getId() +" 연결해제됨");
+		
+		JSONObject jsonMessage = new JSONObject();
+		jsonMessage.put("roomType", "RELOAD");
+		allSessionSend(jsonMessage.toJSONString());
 	}
-	
 }
-
-
-
