@@ -14,9 +14,8 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-	crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.min.js" ></script>
+
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
 	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
@@ -95,9 +94,13 @@
 	</nav>
 
 
-	<script>
-		function checkValue()
-		{
+	<script type="text/javascript">
+		var idCheck=false;
+		var checkedIdValue='';
+		var nicknameCheck=false;
+		var checkedNicknameValue='';
+		
+		function checkValue(){
 		    if(!document.userInfo.userId.value){
 		        alert("아이디를 입력하세요.");
 		        return false;
@@ -118,21 +121,91 @@
 		        alert("비밀번호가 동일하지 않습니다!");
 		        return false;
 		    }
-	
+
+		    if(idCheck==false || checkedValue!=$('#userInfo #userId').val()){
+				alert('아이디 중복체크를 해주세요.');
+				return false;
+			}
+
+		    if(nicknameCheck==false || checkedNicknameValue!=$('#userInfo #nickname').val()){
+				alert('닉네임 중복체크를 해주세요.');
+				return false;
+			}
+
 		    return true;
+		}
+
+		function checkId(){
+
+			if(!document.userInfo.userId.value){
+				alert("아이디를 입력하세요.");
+		        return;
+
+			}
+			var formData = $('#userInfo').serialize();
+
+			$.ajax({
+				url:"checkIdURL",
+				type:"post",
+				data:formData,
+				success:function(data){
+					if(data <= 0){
+						alert('사용가능한 아이디입니다.');
+						idCheck=true;
+						checkedValue=$('#userInfo #userId').val();
+					}
+					else{
+						alert('이미 존재하는 아이디입니다.');
+					}
+				},
+				error:function(){
+					alert('ajax error!');
+				}
+			});
+		}
+		
+		function checkNickname(){
+
+			if(!document.userInfo.nickname.value){
+				alert("닉네임을 입력하세요.");
+		        return;
+
+			}
+			var formData = $('#userInfo').serialize();
+
+			$.ajax({
+				url:"checkNicknameURL",
+				type:"post",
+				data:formData,
+				success:function(data){
+					if(data <= 0){
+						alert('사용가능한 아이디입니다.');
+						nicknameCheck=true;
+						checkedNicknameValue=$('#userInfo #nickname').val();
+						
+					}
+					else{
+						alert('이미 존재하는 닉네임입니다.');
+					}
+				},
+				error:function(){
+					alert('ajax error!');
+				}
+			});
 		}
 	
 	</script>
 
 	<div class="row text-center" style="width: 100%">
 		<div style="width: 30%; float: none; margin: 0 auto;">
-			<div style="height:50%;"></div>
+			<div style="height:30%;"></div>
 			
 			<form method="post" action="<c:url value="/signup" />"
-				name="userInfo" onsubmit="return checkValue()">
+				name="userInfo" onsubmit="return checkValue();" id=userInfo>
 				<div class="form-group">
 					<label for="userId">아이디</label>
-					<input type="text" class="form-control" name="userId">
+					<input type="text" class="form-control" name="userId" id="userId"><br/>
+					<button type="button" onclick="checkId();" class="btn btn-info"> 아이디 확인 </button>
 				</div>
 				<div class="form-group">
 					<label for="password">패스워드</label>
@@ -144,9 +217,10 @@
 				</div>
 				<div class="form-group">
 					<label for="nickname">닉네임</label>
-					<input type="text" class="form-control" name="nickname">
+					<input type="text" class="form-control" name="nickname" id="nickname"><br/>
+					<button type="button" onclick="checkNickname();" class="btn btn-info"> 닉네임 확인 </button>
 				</div>
-				
+				<br/>
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				<input type="submit" value="회원가입" class="btn btn-success">
 			</form>

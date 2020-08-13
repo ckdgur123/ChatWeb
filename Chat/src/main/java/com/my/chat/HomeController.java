@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.my.chat.data.userDAO;
@@ -45,7 +46,7 @@ public class HomeController {
 		if(principal != null && nick == null) {
 			
 			userDAO dao = sqlSession.getMapper(userDAO.class);
-			String nickname = dao.selectUserNickname(principal.getName());
+			String nickname = dao.getUserNickname(principal.getName());
 			session.setAttribute("nickname", nickname);
 			mv.addObject("nickname", nickname);
 		}
@@ -86,12 +87,23 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/checkIdURL")
-	public Integer checkId(userDTO user) {
+	@ResponseBody
+	public Integer checkId(String userId) {
 		
 		userDAO dao = sqlSession.getMapper(userDAO.class);
-		int checkValue = dao.selectUserId();
+		int checkValue = dao.selectUserId(userId);
 		
-		return checkValue;
+		return Integer.valueOf(checkValue);
+	}
+	
+	@RequestMapping("/checkNicknameURL")
+	@ResponseBody
+	public Integer checkNickname(String nickname) {
+		
+		userDAO dao = sqlSession.getMapper(userDAO.class);
+		int checkValue = dao.selectNickname(nickname);
+		
+		return Integer.valueOf(checkValue);
 	}
 	
 }
