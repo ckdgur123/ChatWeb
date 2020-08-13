@@ -42,18 +42,36 @@
         websocket.onclose = function(){
 			disconnect();
     	}
+
+        websocket.onopen = function(){
+        	websocket.send(JSON.stringify({
+				roomType:'CHAT',
+				messageType:'ENTER',
+				roomId:roomId,
+				nickname:nickname
+			}));
+        }
+        
         websocket.onmessage = function(evt){
 
-            var roomMessageData = evt.data;
+            var roomMessageData = JSON.parse(evt.data);
+            console.log(roomMessageData);
 
             if(evt.data.length==1){
                 count = evt.data;
             	$('#userCount').text("현재 접속 인원: "+ count);
             }
-            else if(roomMessageData.MessageType=='CHAT'){
+            else if(roomMessageData.messageType=='CHAT'){
             	let today = new Date(); 
             	$('#chattingLog').append("["+today.toLocaleString()+"] ");
-            	$('#chattingLog').append(evt.data);
+            	$('#chattingLog').append(roomMessageData.message);
+            	$('#chattingLog').append("<br/>");
+                $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
+            }
+            else if(roomMessageData.messageType=='ENTER'){
+
+               	$('#chattingLog').append("# ");
+            	$('#chattingLog').append(roomMessageData.message);
             	$('#chattingLog').append("<br/>");
                 $("#chattingLog").scrollTop($("#chattingLog")[0].scrollHeight);
             }
@@ -82,14 +100,26 @@
         function disconnect(){
         	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
             	if(confirm('채팅방을 나가시겠습니까?')){
+    				websocket.send(JSON.stringify({
+    					roomType:'CHAT',
+    					messageType:'LEAVE',
+    					roomId:roomId,
+    					nickname:nickname
+    					}));
             		websocket.close();
-            		
+            		location.href='<c:url value="/user/roomList" />';
                 }
         	}
     	}
 
     	window.onbeforeunload = function() {
         	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
+        		websocket.send(JSON.stringify({
+					roomType:'CHAT',
+					messageType:'LEAVE',
+					roomId:roomId,
+					nickname:nickname
+					}));
         		websocket.close();
         	}
         }	
@@ -100,7 +130,8 @@
 
 <body>
 	
-	<!-- navbar -->
+	
+<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
 		<a class="navbar-brand" href="<c:url value="/" />"> <i class="fa fa-heart" aria-hidden="true"></i> 채팅
@@ -115,8 +146,9 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="<c:url value="/" />">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching/" />">Matching</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board/" />">Board</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching" />">Group Chatting</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/roomList" />">Chatting Room</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board" />">Board</a></li>
 			</ul>
 
 			<div style="text-align:right;width:10%;">
@@ -157,6 +189,9 @@
 
 		</div>
 	</nav>
+	
+	
+	
 	<div class=container style="border-right: 4px solid black;border-left: 4px solid black;">
 		<div class=container style="border-bottom: 4px dashed gray; margin-top:10px;" >
 			<div class="text-center" style="font-size:30px; font-weight:bold;"> ${roomId}번방 - ${roomName} </div>

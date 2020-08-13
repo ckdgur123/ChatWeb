@@ -2,12 +2,15 @@ package com.my.chat.room;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.my.chat.util.LogInterceptor;
 import com.my.chat.util.MessageType;
 
 public class ChatRoom {
@@ -18,29 +21,40 @@ public class ChatRoom {
 	private String message;
 	private int roomMaxUser;
 	private int roomUserCount;
-	private Map<String,WebSocketSession> sessionList =  new HashMap<String,WebSocketSession>();
-	private Set<String> nicknameList = new HashSet<String>(); 
+	private Map<String,WebSocketSession> sessionMatchedNicknameList =  new HashMap<String,WebSocketSession>();
 	private RoomType roomType;
 	private MessageType messageType;
+	Logger log = LoggerFactory.getLogger(LogInterceptor.class);
 
 	public void addUser(WebSocketSession session,String nickname) {
-		sessionList.put(nickname,session);
-		nicknameList.add(nickname);
-		setRoomUserCount(sessionList.size());
+		sessionMatchedNicknameList.put(nickname,session);
+		setRoomUserCount(sessionMatchedNicknameList.size());
+	}
+	
+	public void removeUser(String nickname) {
+		sessionMatchedNicknameList.remove(nickname);
+		setRoomUserCount(sessionMatchedNicknameList.size());
 	}
 
 	public boolean CheckSession(WebSocketSession session) {
 		
-		return sessionList.containsValue(session);
+		return sessionMatchedNicknameList.containsValue(session);
 	}
 	
 	public boolean CheckNickname(String nickname) {
 		
-		return nicknameList.contains(nickname);
+		return sessionMatchedNicknameList.containsKey(nickname);
+	}
+	
+	public void send(String sendMessage) throws Exception{
+		Collection<WebSocketSession> sessionList = sessionMatchedNicknameList.values();
+		for(WebSocketSession se : sessionList) {
+			se.sendMessage(new TextMessage(sendMessage));
+		}
 	}
 
 	public Set<String> getNicknameList() {
-		return nicknameList;
+		return sessionMatchedNicknameList.keySet();
 	}
 
 	public String getMessage() {

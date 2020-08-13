@@ -87,6 +87,7 @@
 					}));
                 $('#message').val('');
             }
+
 	    }
 	    
     	function disconnect(){
@@ -114,7 +115,7 @@
 
 <body>
 	
-	<!-- navbar -->
+<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
 		<a class="navbar-brand" href="<c:url value="/" />"> <i class="fa fa-heart" aria-hidden="true"></i> 채팅
@@ -129,8 +130,9 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="<c:url value="/" />">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching/" />">Matching</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board/" />">Board</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching" />">Group Chatting</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/roomList" />">Chatting Room</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board" />">Board</a></li>
 			</ul>
 
 			<div style="text-align:right;width:10%;">
@@ -171,6 +173,8 @@
 
 		</div>
 	</nav>
+	
+	
 	<div class=container style="border-right: 4px solid black;border-left: 4px solid black;">
 		<div class=container style="border-bottom: 4px dashed gray; margin-top:10px;" >
 			<div class="text-center" style="font-size:30px; font-weight:bold;"> Chatting </div>

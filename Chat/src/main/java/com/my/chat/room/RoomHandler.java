@@ -1,7 +1,6 @@
 package com.my.chat.room;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my.chat.util.LogInterceptor;
+import com.my.chat.util.MessageType;
 
 public class RoomHandler extends TextWebSocketHandler{
 	
@@ -34,13 +34,12 @@ public class RoomHandler extends TextWebSocketHandler{
 		objectMapper = new ObjectMapper();
 		ChatRoom chatRoom = objectMapper.readValue(message.getPayload(), ChatRoom.class);
 		
-		log.info(objectMapper.writeValueAsString(chatRoom));
+		log.info("chatRoom: "+objectMapper.writeValueAsString(chatRoom));
 		
 		// roomType 이 message로 올 때 = 방 만들기/제거 했을 때
 		if(chatRoom.getRoomType() == RoomType.CREATE) {
 			
 			chatRoom.setRoomId(Integer.toString(map.size()+1));
-			log.info(objectMapper.writeValueAsString(chatRoom));
 			chatRoom.addUser(session, chatRoom.getNickname());
 			map.put(Integer.toString(map.size()+1), chatRoom);
 			sendJSONMessage(session,"SEND_ROOMID",chatRoom.getRoomId(),chatRoom.getRoomName());
@@ -81,7 +80,35 @@ public class RoomHandler extends TextWebSocketHandler{
 		}
 		else if(chatRoom.getRoomType() == RoomType.CHAT) {
 			
-			log.info("오이구야");
+			if(chatRoom.getMessageType() == MessageType.ENTER) {
+				
+				ChatRoom room = map.get(chatRoom.getRoomId());
+				room.addUser(session, chatRoom.getNickname());
+				map.replace(room.getRoomId(), room);
+				chatRoom.setMessage(chatRoom.getNickname()+"님이 입장하셨습니다.");
+				room.send(objectMapper.writeValueAsString(chatRoom));
+			}
+			else if(chatRoom.getMessageType() == MessageType.CHAT) {
+				
+				ChatRoom room = map.get(chatRoom.getRoomId());
+				chatRoom.setMessage(chatRoom.getNickname()+": "+chatRoom.getMessage());
+				room.send(objectMapper.writeValueAsString(chatRoom));
+				room.setMessageType(null);
+				
+			}
+			else if(chatRoom.getMessageType() == MessageType.LEAVE) {
+				
+				ChatRoom room = map.get(chatRoom.getRoomId());
+				room.removeUser(chatRoom.getNickname());
+				chatRoom.setMessage(chatRoom.getNickname()+"님이 퇴장하셨습니다.");
+				room.send(objectMapper.writeValueAsString(chatRoom));
+				
+				
+				// 채팅방 인원이 0명이 되면 방이 사라지도록 함.
+				if(room.getRoomUserCount() <= 0) {
+					map.remove(room.getRoomId());
+				}
+			}
 		}
 	}
 	

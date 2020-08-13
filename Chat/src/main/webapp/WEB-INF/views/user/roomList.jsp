@@ -25,47 +25,48 @@
 	crossorigin="anonymous"></script>
 <script type="text/javascript"
 	src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.5/sockjs.min.js"></script>
-
+<!-- 무료아이콘 -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 <body>
 
-	<!-- navbar -->
+<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
-		<a class="navbar-brand" href="<c:url value="/" />"> <i
-			class="fa fa-heart" aria-hidden="true"></i> 채팅
+		<a class="navbar-brand" href="<c:url value="/" />"> <i class="fa fa-heart" aria-hidden="true"></i> 채팅
 		</a>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
-			data-target="#navbarSupportedContent"
-			aria-controls="navbarSupportedContent" aria-expanded="false"
-			aria-label="Toggle navigation">
+			data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+			aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link"
-					href="<c:url value="/" />">Home</a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="<c:url value="/user/matching" />">Matching</a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="<c:url value="/user/board/" />">Board</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/" />">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching" />">Group Chatting</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/roomList" />">Chatting Room</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board" />">Board</a></li>
 			</ul>
 
-			<div style="text-align: right; width: 10%;">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"> <!--  로그인 하지 않으면 Guest 로 보이고, 로그인하면 닉네임이 보이도록 설정-->
+			<div style="text-align:right;width:10%;">
+				<ul class="navbar-nav mr-auto" >
+					<li class="nav-item dropdown" >
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+							role="button" data-toggle="dropdown" aria-haspopup="true"aria-expanded="false" >
+							
+							<!--  로그인 하지 않으면 Guest 로 보이고, 로그인하면 닉네임이 보이도록 설정-->
 							<sec:authorize access="isAnonymous()">
 								Guest
-							</sec:authorize> <sec:authorize access="isAuthenticated()">
-								<span style="color: white;">${nickname} </span>님
 							</sec:authorize>
-					</a>
+							<sec:authorize access="isAuthenticated()">
+								<span style="color:white;">${nickname} </span>님
+							</sec:authorize>
+						</a>
+						
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<sec:authorize access="isAnonymous()">
 								<a class="dropdown-item" href="<c:url value="/loginForm" />">로그인</a>
@@ -73,20 +74,20 @@
 							</sec:authorize>
 							<sec:authorize access="isAuthenticated()">
 								<a class="dropdown-item" href="<c:url value="/updateUser" />">회원정보수정</a>
-								<a class="dropdown-item" href="#"
-									onclick="document.getElementById('logout-form').submit();">로그아웃</a>
-								<form id="logout-form" action='<c:url value='/logout'/>'
-									method="POST">
-									<input name="${_csrf.parameterName}" type="hidden"
-										value="${_csrf.token}" />
+								<a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">로그아웃</a>
+								<form id="logout-form" action='<c:url value='/logout'/>' method="POST">
+							   		<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 								</form>
-
+								
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="#">Something else here</a>
 							</sec:authorize>
+							
+
 						</div></li>
 				</ul>
 			</div>
+
 		</div>
 	</nav>
 
@@ -162,14 +163,13 @@
 
     	function disconnect(){
         	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
+            	
         		websocket.close();
         	}
     	}
 
     	window.onbeforeunload = function() {
-        	if(websocket !== undefined && websocket.readyState !== WebSocket.CLOSED ){
-        		websocket.close();
-        	}
+        	disconnect();
         }
 
     </script>

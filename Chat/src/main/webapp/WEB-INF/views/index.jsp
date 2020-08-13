@@ -49,8 +49,9 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="<c:url value="/" />">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching" />">Matching</a></li>
-				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board/" />">Board</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/matching" />">Group Chatting</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/roomList" />">Chatting Room</a></li>
+				<li class="nav-item"><a class="nav-link" href="<c:url value="/user/board" />">Board</a></li>
 			</ul>
 
 			<div style="text-align:right;width:10%;">
