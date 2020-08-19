@@ -97,7 +97,7 @@
 
 	<div class="container" style="width: 100%; height: 100%;">
 		<div class="row" style="width: 100%; height: 35%;"></div>
-
+	
 		<div class="mx-auto" style="width: 230px;">
 			<sec:authorize access="isAnonymous()">
 				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/loginForm" />"> 로그인 </a></p>
@@ -107,12 +107,9 @@
 				<h5 style="text-align:center;"> ${nickname } 님, 안녕하세요! </h5>
 				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/matching" />"> 매칭하기 </a></p>
 				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/roomList" />"> 채팅방 </a></p>
-				<p><a class="btn btn-secondary btn-lg btn-block" href="<c:url value="/user/board" />"> 게시판 </a></p>
 			</sec:authorize>
-			
 		</div>
 	</div>
-
 
 </body>
 </html>

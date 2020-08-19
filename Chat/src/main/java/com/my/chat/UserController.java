@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.my.chat.room.ChatRoom;
 import com.my.chat.util.LogInterceptor;
 
 @Controller

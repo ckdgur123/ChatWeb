@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.my.chat.util.LogInterceptor;
 import com.my.chat.util.MessageType;
 
 public class ChatRoom {
